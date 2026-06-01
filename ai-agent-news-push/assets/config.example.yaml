@@ -1,0 +1,98 @@
+# ============================================================
+#  AI / Agent 资讯推送工具 —— 配置文件 (这是你唯一需要改的文件)
+#  改完后用以下命令测试 / 运行:
+#    python ai_news_push/news_push.py --config config.yaml --dry-run   # 只预览不推送
+#    python ai_news_push/news_push.py --config config.yaml             # 真正推送
+# ============================================================
+
+# ---------- 1. 大模型 (用于去重 / 分类 / 评分 / 生成中文摘要) ----------
+llm:
+  # 默认使用环境内置的 AI 网关 (OpenAI 兼容)，开箱即用，无需填 key。
+  # 脚本会自动从环境变量读取 base_url 和 api_key:
+  base_url_env: AI_GATEWAY_BASE_URL   # 环境变量名
+  api_key_env: AI_GATEWAY_API_KEY     # 环境变量名
+  base_url_suffix: /api/v1            # 拼到 base_url 后面，得到 .../api/v1/chat/completions
+  model: anthropic/claude-haiku-4.5   # 摘要用便宜快的模型即可；可换 anthropic/claude-sonnet-4.6
+  max_tokens: 4096                    # 单批最大输出 token (必须给足，否则批量结果会被截断成非法 JSON)
+
+  # 如果你想用自己的 OpenAI / 兼容服务，注释掉上面的 *_env，直接写死下面两行:
+  # base_url: https://api.openai.com/v1
+  # api_key: sk-xxxxxxxxxxxxxxxx
+
+# ---------- 2. 关键词预过滤 (在调用大模型之前，省 token) ----------
+# 命中 keywords_include 中任意一个才保留 (留空 = 不过滤，全部保留)
+keywords_include:
+  - AI Agent
+  - Agentic
+  - LLM
+  - 大模型
+  - Anthropic
+  - OpenAI
+  - MCP
+  - 融资
+  - funding
+# 命中 keywords_exclude 中任意一个就丢弃
+keywords_exclude:
+  - AI Art
+  - 绘画
+
+# ---------- 3. 数据来源 ----------
+sources:
+  # RSS 源：加一个源就是加一行 {name, url}。更多优质源见 references/sources-catalog.md
+  rss:
+    - name: Anthropic News
+      url: https://www.anthropic.com/rss.xml
+    - name: OpenAI Blog
+      url: https://openai.com/blog/rss.xml
+    - name: Google AI Blog
+      url: https://blog.google/technology/ai/rss/
+    - name: Hugging Face Blog
+      url: https://huggingface.co/blog/feed.xml
+
+  # Hacker News：抓取得分高且含关键词的热帖
+  hackernews:
+    enabled: true
+    min_score: 100
+    keywords: [AI, agent, LLM, Anthropic, OpenAI, GPT, Claude]
+
+# ---------- 4. 推送渠道 (可同时开启多个) ----------
+push:
+  # 飞书自定义机器人 (群设置 → 群机器人 → 添加自定义机器人 → 复制 Webhook)
+  feishu:
+    enabled: false
+    webhook: "https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx"
+    # 如果机器人开启了「签名校验」，把密钥填这里；否则留空
+    secret: ""
+
+  # 企业微信群机器人 (群 → 添加群机器人 → 复制 Webhook 地址)
+  wechat_work:
+    enabled: false
+    webhook: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"
+
+  # 钉钉自定义机器人 (群设置 → 智能群助手 → 添加机器人 → 自定义)
+  dingtalk:
+    enabled: false
+    webhook: "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxx"
+    secret: ""   # 如开启加签则填，否则留空
+
+  # 邮件 (SMTP)。先占位，需要时把 enabled 改为 true 并填好
+  email:
+    enabled: false
+    smtp_host: smtp.example.com
+    smtp_port: 465
+    use_ssl: true
+    username: you@example.com
+    password: "your-smtp-password-or-app-token"
+    from_addr: you@example.com
+    to_addrs: [teammate@example.com]
+
+# ---------- 5. 推送行为 ----------
+delivery:
+  max_items: 8                 # 每次最多推送多少条
+  min_value_score: 6           # 大模型价值度评分阈值 (1-10)，低于此分丢弃
+  llm_max_candidates: 60       # 调大模型前先按时间倒序粗筛到这么多条 (控制成本/避免返回截断)
+  llm_batch_size: 25           # 分批调用大模型，每批条数 (单批失败只降级该批，不影响其它批)
+  dedup_store: ./pushed.json   # 记录已推送链接的去重文件 (自动维护)
+  digest_title: "AI / Agent 每日情报"
+  # 摘要风格说明，会传给大模型，可按需修改:
+  summary_style: "面向企业决策者与 AI 从业者，去粗取精，保留专业术语英文对照。"

@@ -1,0 +1,45 @@
+{
+  "skill_name": "ai-agent-news-push",
+  "evals": [
+    {
+      "id": 0,
+      "name": "setup-feishu-from-scratch",
+      "prompt": "我想搭一个能每天把 AI 和 Agent 领域的新闻推送到我飞书群的小工具，信息源你帮我挑几个靠谱的。我对代码不太熟，希望尽量简单。",
+      "expected_output": "助手应使用 ai-agent-news-push skill：生成一份 config.yaml（含挑选好的 RSS 源、飞书渠道开启、其它渠道关闭），告诉用户去哪拿飞书 webhook 并填进去，给出运行命令（建议先 --dry-run），并说明如何配置定时（cron）。应解释而非让用户写代码。",
+      "files": [],
+      "assertions": [
+        {"text": "Locates and uses the ai-agent-news-push skill (references its scripts/config, not a from-scratch reimplementation)"},
+        {"text": "Produces a config.yaml (or copies config.example.yaml) with concrete RSS sources filled in"},
+        {"text": "Enables the feishu push channel and explains where to obtain the Feishu webhook URL"},
+        {"text": "Provides the run command and recommends a --dry-run first"},
+        {"text": "Explains how to schedule recurring runs (e.g. cron)"}
+      ]
+    },
+    {
+      "id": 1,
+      "name": "run-configured-tool-dry-run",
+      "prompt": "我 config 已经配好了，企业微信 webhook 也填了。帮我先试跑一下看看会推什么，先别真的发出去。",
+      "expected_output": "助手应识别这是已配置场景，使用 skill 提供的 news_push.py，以 --dry-run 方式运行（python news_push.py --config <path> --dry-run），并解释 dry-run 不会真正推送也不更新去重存档；若依赖缺失会先安装 requirements。",
+      "files": [],
+      "assertions": [
+        {"text": "Runs the tool with the --dry-run flag rather than a real push"},
+        {"text": "Uses the skill's news_push.py entrypoint with --config"},
+        {"text": "Explains that --dry-run previews only and does not update the dedup store"},
+        {"text": "Handles missing dependencies (installs from requirements.txt) if needed"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "add-arxiv-and-dingtalk",
+      "prompt": "现在这个推送工具我已经在用了，能不能再加一个 arXiv 的 cs.AI 论文源，另外除了飞书我还想同时推一份到钉钉群。",
+      "expected_output": "助手应：(1) 在 config 的 sources.rss 里加入 arXiv cs.AI 的 RSS 地址（http://export.arxiv.org/rss/cs.AI）；(2) 在 push 下启用 dingtalk 渠道，说明如何拿钉钉 webhook 与加签 secret 并填入。应基于 skill 现有的扩展约定，无需改动核心代码即可加 RSS 源；钉钉渠道 skill 已内置 push_dingtalk。",
+      "files": [],
+      "assertions": [
+        {"text": "Adds the arXiv cs.AI RSS feed to sources.rss in config (uses a real arXiv RSS URL)"},
+        {"text": "Enables the dingtalk channel in config (push.dingtalk.enabled)"},
+        {"text": "Explains how to obtain the DingTalk webhook and signing secret"},
+        {"text": "Recognizes adding an RSS source needs only config edits, not core code changes"}
+      ]
+    }
+  ]
+}
