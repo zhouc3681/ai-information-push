@@ -40,8 +40,34 @@ RSS 地址会变动，接入前最好快速核实一下能否解析（`--dry-run
 | 来源 | 说明 |
 | :--- | :--- |
 | 机器之心 | https://www.jiqizhixin.com/rss |
-| 量子位 | 公众号为主，RSS 可用第三方镜像 |
-| 播客（Latent Space / OnBoard! / 42章经） | 多数有 RSS，订阅后本工具只取标题+简介；完整音频转写属进阶功能（见下） |
+| 量子位 | 公众号为主，RSS 可用第三方镜像（如 wechat2rss / feeddd） |
+| 极客公园 GeekPark | https://www.geekpark.net/rss ，追踪国内外 Agent 产品商业动态 |
+| 阿杰艾（AI）及之 | 微信公众号，深度拆解 Agent 架构 / 多智能体协同 / 企业落地，需第三方 RSS 镜像 |
+| 既然如此（might as well） | 小宇宙播客，AI 一线投资人 / 创业者访谈，可在小宇宙 App 订阅 |
+| 不合时宜 / Way to AGI 特辑 | 偏共识与超级个体生产力视角，可在小宇宙搜索 |
+| 播客（Latent Space / OnBoard! / 42章经 / The Cognitive Revolution） | 多数有 RSS，订阅后本工具只取标题+简介；完整音频转写属进阶功能（见下） |
+
+## 海外 Agent 前沿（架构 & 开源生态）
+
+| 来源 | RSS / 入口 |
+| :--- | :--- |
+| Anthropic Research（含《Building Effective Agents》） | https://www.anthropic.com/research |
+| Latent Space Podcast | https://www.latent.space/feed |
+| The Cognitive Revolution Podcast | https://www.cognitiverevolution.ai/feed |
+| Hugging Face smolagents 文档 | https://huggingface.co/docs/smolagents |
+| Hugging Face smolagents 发布 | https://github.com/huggingface/smolagents/releases.atom |
+
+## 国内 Agent 落地（应用 & 工作流编排）
+
+| 来源 | RSS / 入口 |
+| :--- | :--- |
+| Way to AGI 社区 | https://waytoagi.com |
+| Dify 官网 / 发布 | https://dify.ai ；https://github.com/langgenius/dify/releases.atom |
+| Coze Studio 发布 | https://github.com/coze-dev/coze-studio/releases.atom |
+
+> 跟进策略：
+> - 开发者：盯 Anthropic Research、Latent Space、Dify / smolagents 仓库 release。
+> - 产品 / 业务 / 创业者：每周刷一遍 The Cognitive Revolution、公众号「阿杰艾」、Way to AGI 精华帖。
 
 ## 进阶：超出 RSS 的来源
 

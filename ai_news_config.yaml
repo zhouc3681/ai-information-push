@@ -10,9 +10,10 @@ llm:
   api_key_env: AI_GATEWAY_API_KEY
   base_url_suffix: /api/v1
   model: anthropic/claude-haiku-4.5
-  max_tokens: 4096
+  max_tokens: 8192
 
 keywords_include:
+  # 英文 / 通用
   - AI Agent
   - Agentic
   - agents
@@ -26,12 +27,45 @@ keywords_include:
   - MCP
   - LangGraph
   - enterprise AI
-  - 企业 AI
-  - 大模型
-  - 自动化
   - benchmark
   - workflow
   - enterprise
+  # 中文通用
+  - 智能体
+  - 大模型
+  - 大语言模型
+  - 企业 AI
+  - 自动化
+  - AGI
+  # 国产模型 / 厂商
+  - 通义千问
+  - Qwen
+  - 文心
+  - DeepSeek
+  - 深度求索
+  - Kimi
+  - 月之暗面
+  - 智谱
+  - ChatGLM
+  - GLM
+  - 豆包
+  - 百川
+  - Baichuan
+  - MiniMax
+  - 书生
+  - 浦语
+  - InternLM
+  - 飞桨
+  - PaddlePaddle
+  - 阿里
+  - 字节
+  - 腾讯
+  - 百度
+  - 华为
+  # 国产应用
+  - Coze
+  - Dify
+  - 扣子
 
 keywords_exclude:
   - AI Art
@@ -63,42 +97,177 @@ sources:
       url: https://arxiv.org/abs/2605.03596
       published: 2026-05-14
       summary: 评测 AI Agent 在复杂办公空间任务中的表现。
+    # —— 海外架构演进固定监控 ——
+    - name: Anthropic Building Effective Agents
+      title: Anthropic《Building Effective Agents》构建高效智能体指南
+      url: https://www.anthropic.com/research/building-effective-agents
+      published: 2026-01-01
+      summary: Anthropic 官方对 Agent 架构（Workflow vs Agent）的务实拆解，全网公认的 Agent 开发指南。
+    - name: Hugging Face smolagents Docs
+      title: Hugging Face smolagents 框架文档
+      url: https://huggingface.co/docs/smolagents
+      published: 2026-01-01
+      summary: Hugging Face 推出的极简 Code Agent 框架，文档与社区是学习「代码型 Agent」的最佳入口。
+    # —— 国内 Agent 落地与社区固定监控 ——
+    - name: Way to AGI 知识库
+      title: Way to AGI：国内规模最大的 AGI 社区与 Agent 知识库
+      url: https://waytoagi.com
+      published: 2026-01-01
+      summary: 知识库中有专门的 Agent 核心原理与 Coze / Dify 等主流平台的硬核教程。
+    - name: Dify 官方
+      title: Dify：国内主流 Agent 工作流编排平台
+      url: https://dify.ai
+      published: 2026-01-01
+      summary: 看一线开发者用 Workflow 搓出高级 Agent 的真实报错、调优与实战案例。
 
   rss:
+    # =========================================================
+    # ==== 海外大厂一手官方 (Tier 1: 直接来源, 优先级最高) ====
+    # =========================================================
+    - name: OpenAI News
+      url: https://openai.com/news/rss.xml
+    - name: Google AI Blog
+      url: https://blog.google/technology/ai/rss/
+    - name: Google DeepMind Blog
+      url: https://deepmind.google/blog/rss.xml
+    - name: Microsoft AI Blog
+      url: https://blogs.microsoft.com/ai/feed/
+    - name: NVIDIA Corporate Blog
+      url: https://blogs.nvidia.com/feed/
+    - name: NVIDIA Developer Blog
+      url: https://developer.nvidia.com/blog/feed/
+    - name: Apple Machine Learning Research
+      url: https://machinelearning.apple.com/rss.xml
+    - name: AWS Machine Learning Blog
+      url: https://aws.amazon.com/blogs/machine-learning/feed/
+    - name: Hugging Face Blog
+      url: https://huggingface.co/blog/feed.xml
+    # =========================================================
+    # ==== 海外 Agent 框架 / SDK 一手 Release Feed ============
+    # =========================================================
+    - name: OpenAI Python SDK Releases
+      url: https://github.com/openai/openai-python/releases.atom
+    - name: OpenAI Cookbook Commits
+      url: https://github.com/openai/openai-cookbook/commits/main.atom
+    - name: Anthropic SDK Releases
+      url: https://github.com/anthropics/anthropic-sdk-python/releases.atom
+    - name: LangChain Blog
+      url: https://www.langchain.com/blog/rss.xml
+    - name: LangGraph Releases
+      url: https://github.com/langchain-ai/langgraph/releases.atom
+    - name: LlamaIndex Releases
+      url: https://github.com/run-llama/llama_index/releases.atom
+    - name: AutoGen Releases
+      url: https://github.com/microsoft/autogen/releases.atom
+    - name: CrewAI Releases
+      url: https://github.com/crewAIInc/crewAI/releases.atom
+    - name: Hugging Face smolagents Releases
+      url: https://github.com/huggingface/smolagents/releases.atom
+    - name: Mistral Inference Releases
+      url: https://github.com/mistralai/mistral-inference/releases.atom
+    # =========================================================
+    # ==== 海外 Reddit 社区 (一手开发者声音) ==================
+    # =========================================================
+    - name: Reddit r/LocalLLaMA
+      url: https://www.reddit.com/r/LocalLLaMA/.rss
+    - name: Reddit r/MachineLearning
+      url: https://www.reddit.com/r/MachineLearning/.rss
+    - name: Reddit r/AI_Agents
+      url: https://www.reddit.com/r/AI_Agents/.rss
+    # =========================================================
+    # ==== 海外学术 / 深度博客 ================================
+    # =========================================================
+    - name: arXiv cs.AI
+      url: http://export.arxiv.org/rss/cs.AI
+    - name: arXiv cs.CL
+      url: http://export.arxiv.org/rss/cs.CL
+    - name: Lilian Weng Blog
+      url: https://lilianweng.github.io/index.xml
+    - name: Import AI Newsletter
+      url: https://importai.substack.com/feed
+    # =========================================================
+    # ==== 海外播客 / 社区聚合 ================================
+    # =========================================================
+    - name: Latent Space Podcast
+      url: https://www.latent.space/feed
+    - name: The Cognitive Revolution Podcast
+      url: https://feeds.megaphone.fm/RINTP3108857801
+    # =========================================================
+    # ==== 海外科技媒体 (用作交叉验证, 非一手) ================
+    # =========================================================
+    - name: TechCrunch AI
+      url: https://techcrunch.com/category/artificial-intelligence/feed/
+    - name: VentureBeat AI
+      url: https://venturebeat.com/category/ai/feed/
     - name: Google News - Enterprise AI Agents
       url: https://news.google.com/rss/search?q=%22AI%20agent%22%20enterprise%20when:3d&hl=en-US&gl=US&ceid=US:en
     - name: Google News - Agentic AI
       url: https://news.google.com/rss/search?q=%22agentic%20AI%22%20enterprise%20when:3d&hl=en-US&gl=US&ceid=US:en
     - name: Google News - MCP AI
       url: https://news.google.com/rss/search?q=%22Model%20Context%20Protocol%22%20AI%20when:7d&hl=en-US&gl=US&ceid=US:en
-    - name: TechCrunch AI
-      url: https://techcrunch.com/category/artificial-intelligence/feed/
-    - name: VentureBeat AI
-      url: https://venturebeat.com/category/ai/feed/
-    - name: OpenAI News
-      url: https://openai.com/news/rss.xml
-    - name: Anthropic News
-      url: https://www.anthropic.com/news/rss.xml
-    - name: Google AI
-      url: https://blog.google/technology/ai/rss/
-    - name: Microsoft AI
-      url: https://blogs.microsoft.com/ai/feed/
-    - name: Hugging Face Blog
-      url: https://huggingface.co/blog/feed.xml
-    - name: LangChain Blog
-      url: https://www.langchain.com/blog/rss.xml
-    - name: LlamaIndex Blog
-      url: https://www.llamaindex.ai/blog/feed
-    - name: arXiv cs.AI
-      url: http://export.arxiv.org/rss/cs.AI
-    - name: arXiv cs.CL
-      url: http://export.arxiv.org/rss/cs.CL
-    - name: LangGraph Releases
-      url: https://github.com/langchain-ai/langgraph/releases.atom
-    - name: AutoGen Releases
-      url: https://github.com/microsoft/autogen/releases.atom
-    - name: CrewAI Releases
-      url: https://github.com/crewAIInc/crewAI/releases.atom
+    # =========================================================
+    # ==== 国内大厂 / 模型实验室一手 GitHub Feed ==============
+    # =========================================================
+    - name: 阿里 Qwen3 主仓 Commits
+      url: https://github.com/QwenLM/Qwen3/commits/main.atom
+    - name: DeepSeek-V3 主仓 Commits
+      url: https://github.com/deepseek-ai/DeepSeek-V3/commits/main.atom
+    - name: 智谱 GLM-4.5 主仓 Commits
+      url: https://github.com/zai-org/GLM-4.5/commits/main.atom
+    - name: 月之暗面 MoBA Commits
+      url: https://github.com/MoonshotAI/MoBA/commits/master.atom
+    - name: 百川 Baichuan2 主仓 Commits
+      url: https://github.com/baichuan-inc/Baichuan2/commits/main.atom
+    - name: 上海 AI 实验室 InternLM Commits
+      url: https://github.com/InternLM/InternLM/commits/main.atom
+    - name: 上海 AI 实验室 LMDeploy Releases
+      url: https://github.com/InternLM/lmdeploy/releases.atom
+    - name: 面壁智能 MiniCPM Releases
+      url: https://github.com/openbmb/MiniCPM/releases.atom
+    - name: 面壁智能 MiniCPM-V Releases
+      url: https://github.com/openbmb/MiniCPM-V/releases.atom
+    - name: 百度 PaddleNLP Releases
+      url: https://github.com/PaddlePaddle/PaddleNLP/releases.atom
+    - name: 百度 ERNIE Releases
+      url: https://github.com/PaddlePaddle/ERNIE/releases.atom
+    - name: 百度飞桨 Paddle Releases
+      url: https://github.com/PaddlePaddle/Paddle/releases.atom
+    - name: 腾讯 Hunyuan-Video Releases
+      url: https://github.com/Tencent/HunyuanVideo/releases.atom
+    - name: 智谱 CogVideo Releases
+      url: https://github.com/THUDM/CogVideo/releases.atom
+    # =========================================================
+    # ==== 国内 Agent 应用 / 平台一手 ==========================
+    # =========================================================
+    - name: Dify Releases
+      url: https://github.com/langgenius/dify/releases.atom
+    - name: Coze Studio Releases
+      url: https://github.com/coze-dev/coze-studio/releases.atom
+    - name: Coze Loop Releases
+      url: https://github.com/coze-dev/coze-loop/releases.atom
+    - name: LobeChat Releases
+      url: https://github.com/lobehub/lobe-chat/releases.atom
+    # =========================================================
+    # ==== 国内媒体 (非一手, 但聚合速度快) ====================
+    # =========================================================
+    - name: 量子位
+      url: https://www.qbitai.com/feed
+    - name: 36氪 主站
+      url: https://36kr.com/feed
+    - name: 36氪 快讯
+      url: https://36kr.com/feed-newsflash
+    - name: 钛媒体
+      url: https://www.tmtpost.com/rss.xml
+    - name: 雷峰网
+      url: https://www.leiphone.com/feed
+    - name: IT之家
+      url: https://www.ithome.com/rss/
+    - name: InfoQ 中国
+      url: https://www.infoq.cn/feed.xml
+    # 备注: Anthropic News / Mistral / Stability / 机器之心 等没有可用 RSS,
+    # 通过 GitHub releases.atom 或 commits.atom 间接监控.
+    # 公众号 (阿杰艾、极客公园) 和 小宇宙播客 (既然如此、不合时宜)
+    # 没有公开 RSS, 通过第三方镜像 (wechat2rss / feeddd) 接入即可.
 
   hackernews:
     enabled: true
@@ -106,17 +275,25 @@ sources:
     keywords: [AI, agent, LLM, OpenAI, Anthropic, Claude, Copilot, Gemini, MCP]
 
 push:
+  # 凭证支持「环境变量优先」: 留空 webhook/secret/password,
+  # 改填 webhook_env 等指向的环境变量名, 即可避免明文入库.
+  # 若同时填了明文和 env 名, 优先用明文.
   feishu:
     enabled: false
     webhook: ""
+    webhook_env: FEISHU_WEBHOOK
     secret: ""
+    secret_env: FEISHU_SECRET
   wechat_work:
-    enabled: false
+    enabled: true
     webhook: ""
+    webhook_env: WECOM_WEBHOOK
   dingtalk:
     enabled: false
     webhook: ""
+    webhook_env: DINGTALK_WEBHOOK
     secret: ""
+    secret_env: DINGTALK_SECRET
   email:
     enabled: false
     smtp_host: smtp.example.com
@@ -124,15 +301,16 @@ push:
     use_ssl: true
     username: you@example.com
     password: ""
+    password_env: SMTP_PASSWORD
     from_addr: you@example.com
     to_addrs: [team@example.com]
 
 delivery:
-  max_items: 8
+  max_items: 12
   min_value_score: 6
-  recent_hours: 96
-  llm_max_candidates: 60
-  llm_batch_size: 20
+  recent_hours: 48
+  llm_max_candidates: 80
+  llm_batch_size: 12
   dedup_store: ./data/pushed.json
   digest_title: "AI / Agent 每日情报"
   summary_style: "面向企业 AI 产品经理、研究员和管理层，突出今天新增变化、企业影响、可验证来源和建议动作。不要在正文显示评分。"

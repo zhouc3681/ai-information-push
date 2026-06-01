@@ -21,11 +21,35 @@ except ImportError:
     print("缺少 PyYAML，请先安装依赖：python -m pip install -r ai-agent-news-push/scripts/requirements.txt", file=sys.stderr)
     raise SystemExit(1)
 
+import requests
+
 import pushers
 import sources
 import store
 from news_push import keyword_filter
 from processor import process_items
+
+
+def resolve_redirect_urls(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """把 Google News 等聚合源的跳转链替换为原站直链。
+
+    只在最终入选的少量条目上跑（< 20），失败保留原 URL。
+    """
+    REDIRECT_HOSTS = ("news.google.com",)
+    headers = {"User-Agent": sources.USER_AGENT}
+    for item in items:
+        url = item.get("url") or ""
+        if not any(host in url for host in REDIRECT_HOSTS):
+            continue
+        try:
+            resp = requests.get(url, headers=headers, allow_redirects=True, timeout=8)
+            final = resp.url
+            if final and final != url and not any(host in final for host in REDIRECT_HOSTS):
+                item["url"] = final
+        except Exception:
+            # 解析失败保留原 URL，不让网络抖动拖垮推送
+            pass
+    return items
 
 
 def load_config(path: str) -> dict[str, Any]:
@@ -295,6 +319,7 @@ def main() -> int:
     if fresh:
         processed = process_items(fresh, cfg.get("llm", {}), delivery)
         processed = processed[: int(delivery.get("max_items", 8))]
+        processed = resolve_redirect_urls(processed)
     else:
         processed = []
 

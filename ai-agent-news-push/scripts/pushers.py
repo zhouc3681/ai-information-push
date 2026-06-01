@@ -10,12 +10,29 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
+import os
 import sys
 import time
 import urllib.parse
 from typing import Any
 
 import requests
+
+
+def _resolve(cfg: dict, key: str) -> str:
+    """优先读 cfg[key]，否则读 cfg[key+'_env'] 指向的环境变量。
+
+    用法示例：
+        webhook: ""
+        webhook_env: WECOM_WEBHOOK   # 实际值由环境变量提供，避免凭证入库。
+    """
+    val = cfg.get(key, "")
+    if val:
+        return val
+    env_name = cfg.get(f"{key}_env", "")
+    if env_name:
+        return os.environ.get(env_name, "")
+    return ""
 
 CATEGORY_EMOJI = {
     "Tool Mastery": "🛠️",
@@ -68,7 +85,7 @@ def render_plain(items: list[dict[str, Any]], title: str) -> str:
 # ---------------------- 各渠道 ----------------------
 
 def push_feishu(items, cfg, title) -> tuple[bool, str]:
-    webhook = cfg.get("webhook", "")
+    webhook = _resolve(cfg, "webhook")
     if not webhook or "xxxx" in webhook:
         return False, "飞书 webhook 未配置"
     elements = []
@@ -92,12 +109,12 @@ def push_feishu(items, cfg, title) -> tuple[bool, str]:
             "elements": elements or [{"tag": "div", "text": {"tag": "plain_text", "content": "暂无新内容"}}],
         },
     }
-    body = _feishu_sign(card, cfg.get("secret", ""))
+    body = _feishu_sign(card, _resolve(cfg, "secret"))
     return _post(webhook, body, "飞书")
 
 
 def push_wechat_work(items, cfg, title) -> tuple[bool, str]:
-    webhook = cfg.get("webhook", "")
+    webhook = _resolve(cfg, "webhook")
     if not webhook or "xxxx" in webhook:
         return False, "企业微信 webhook 未配置"
     md = render_markdown(items, title)
@@ -109,11 +126,11 @@ def push_wechat_work(items, cfg, title) -> tuple[bool, str]:
 
 
 def push_dingtalk(items, cfg, title) -> tuple[bool, str]:
-    webhook = cfg.get("webhook", "")
+    webhook = _resolve(cfg, "webhook")
     if not webhook or "xxxx" in webhook:
         return False, "钉钉 webhook 未配置"
     md = render_markdown(items, title)
-    url = _dingtalk_sign(webhook, cfg.get("secret", ""))
+    url = _dingtalk_sign(webhook, _resolve(cfg, "secret"))
     body = {"msgtype": "markdown", "markdown": {"title": title, "text": md}}
     return _post(url, body, "钉钉")
 
@@ -130,13 +147,14 @@ def push_email(items, cfg, title) -> tuple[bool, str]:
     msg["Subject"] = title
     msg["From"] = cfg.get("from_addr", cfg.get("username", ""))
     msg["To"] = ", ".join(to_addrs)
+    password = _resolve(cfg, "password")
     try:
         if cfg.get("use_ssl", True):
             server = smtplib.SMTP_SSL(cfg["smtp_host"], int(cfg.get("smtp_port", 465)), timeout=30)
         else:
             server = smtplib.SMTP(cfg["smtp_host"], int(cfg.get("smtp_port", 587)), timeout=30)
             server.starttls()
-        server.login(cfg["username"], cfg["password"])
+        server.login(cfg["username"], password)
         server.sendmail(msg["From"], to_addrs, msg.as_string())
         server.quit()
         return True, "邮件发送成功"

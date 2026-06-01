@@ -23,6 +23,14 @@ except ImportError:  # pragma: no cover
 
 import requests
 
+# 真实 Chrome UA: 一些站点 (Aliyun WAF / Cloudflare / Substack)
+# 会拦截短 UA 或 python-requests/feedparser 的默认 UA.
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0.0.0 Safari/537.36"
+)
+
 
 def _log(msg: str) -> None:
     print(f"[sources] {msg}", file=sys.stderr)
@@ -40,7 +48,7 @@ def fetch_rss(feeds: list[dict[str, str]]) -> list[dict[str, Any]]:
         if not url:
             continue
         try:
-            parsed = feedparser.parse(url)
+            parsed = feedparser.parse(url, agent=USER_AGENT)
             for entry in parsed.entries:
                 items.append(
                     {
@@ -113,7 +121,7 @@ def fetch_pages(pages: list[dict[str, str]]) -> list[dict[str, Any]]:
         if not url:
             continue
         try:
-            resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            resp = requests.get(url, timeout=20, headers={"User-Agent": USER_AGENT})
             resp.raise_for_status()
             html = resp.text
             title = _extract_tag(html, "title") or page.get("title") or name

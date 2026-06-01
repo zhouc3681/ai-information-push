@@ -1185,3 +1185,62 @@ button {
     font-size: 14px;
   }
 }
+
+/* —— 推荐情报源卡片补充样式 —— */
+.source-card .source-tag {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.source-card h4 {
+  margin: 12px 0 8px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.source-card .source-meta {
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.source-card a {
+  margin-top: auto;
+  padding-top: 12px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.source-card a:hover {
+  text-decoration: underline;
+}
+
+.source-followup {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.015);
+  line-height: 1.65;
+}
+
+.source-followup strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.source-followup ul {
+  margin: 0;
+  padding-left: 20px;
+}
