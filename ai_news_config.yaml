@@ -1,0 +1,144 @@
+# AI 情报雷达真实推送配置
+# 先执行 dry-run 预览，不会真实推送：
+#   python ai-agent-news-push/scripts/dashboard_bridge.py --config ai_news_config.yaml --dry-run
+#
+# 确认内容后真实推送：
+#   python ai-agent-news-push/scripts/dashboard_bridge.py --config ai_news_config.yaml --push
+
+llm:
+  base_url_env: AI_GATEWAY_BASE_URL
+  api_key_env: AI_GATEWAY_API_KEY
+  base_url_suffix: /api/v1
+  model: anthropic/claude-haiku-4.5
+  max_tokens: 4096
+
+keywords_include:
+  - AI Agent
+  - Agentic
+  - agents
+  - agent
+  - LLM
+  - OpenAI
+  - Anthropic
+  - Claude
+  - Copilot
+  - Gemini
+  - MCP
+  - LangGraph
+  - enterprise AI
+  - 企业 AI
+  - 大模型
+  - 自动化
+  - benchmark
+  - workflow
+  - enterprise
+
+keywords_exclude:
+  - AI Art
+  - image generation
+  - 绘画
+  - 壁纸
+
+sources:
+  # 没有 RSS 的高价值官方页/发布说明，可作为固定监控对象。
+  # 首次推送后会进入 pushed.json，后续不会重复刷屏。
+  pages:
+    - name: OpenAI Enterprise Release Notes
+      title: ChatGPT Enterprise & Edu 发布说明：Workspace Agents、Codex 与应用模板更新
+      url: https://help.openai.com/en/articles/10128477-chatgpt-enterprise-i-edu-informacje-o-wersjach
+      published: 2026-05-28
+      summary: ChatGPT Enterprise / Edu 发布说明，覆盖 Workspace Agents、Codex、应用模板等企业功能更新。
+    - name: OpenAI Workspace Agents
+      title: OpenAI 发布 Workspace Agents
+      url: https://openai.com/index/introducing-workspace-agents-in-chatgpt/
+      published: 2026-04-22
+      summary: OpenAI 发布团队级 Workspace Agents，面向企业共享工作流和 Slack 场景。
+    - name: ServiceNow Knowledge 2026
+      title: ServiceNow Knowledge 2026：AI Control Tower 与企业 Agent 治理
+      url: https://newsroom.servicenow.com/press-releases/details/2026/ServiceNow-turns-enterprise-AI-chaos-into-control-with-the-platform-for-governed-autonomous-work/default.aspx
+      published: 2026-05-05
+      summary: ServiceNow AI Control Tower、AI Specialists、Action Fabric 等企业 Agent 治理更新。
+    - name: Workspace-Bench 1.0
+      title: Workspace-Bench 1.0：复杂办公空间 Agent 评测
+      url: https://arxiv.org/abs/2605.03596
+      published: 2026-05-14
+      summary: 评测 AI Agent 在复杂办公空间任务中的表现。
+
+  rss:
+    - name: Google News - Enterprise AI Agents
+      url: https://news.google.com/rss/search?q=%22AI%20agent%22%20enterprise%20when:3d&hl=en-US&gl=US&ceid=US:en
+    - name: Google News - Agentic AI
+      url: https://news.google.com/rss/search?q=%22agentic%20AI%22%20enterprise%20when:3d&hl=en-US&gl=US&ceid=US:en
+    - name: Google News - MCP AI
+      url: https://news.google.com/rss/search?q=%22Model%20Context%20Protocol%22%20AI%20when:7d&hl=en-US&gl=US&ceid=US:en
+    - name: TechCrunch AI
+      url: https://techcrunch.com/category/artificial-intelligence/feed/
+    - name: VentureBeat AI
+      url: https://venturebeat.com/category/ai/feed/
+    - name: OpenAI News
+      url: https://openai.com/news/rss.xml
+    - name: Anthropic News
+      url: https://www.anthropic.com/news/rss.xml
+    - name: Google AI
+      url: https://blog.google/technology/ai/rss/
+    - name: Microsoft AI
+      url: https://blogs.microsoft.com/ai/feed/
+    - name: Hugging Face Blog
+      url: https://huggingface.co/blog/feed.xml
+    - name: LangChain Blog
+      url: https://www.langchain.com/blog/rss.xml
+    - name: LlamaIndex Blog
+      url: https://www.llamaindex.ai/blog/feed
+    - name: arXiv cs.AI
+      url: http://export.arxiv.org/rss/cs.AI
+    - name: arXiv cs.CL
+      url: http://export.arxiv.org/rss/cs.CL
+    - name: LangGraph Releases
+      url: https://github.com/langchain-ai/langgraph/releases.atom
+    - name: AutoGen Releases
+      url: https://github.com/microsoft/autogen/releases.atom
+    - name: CrewAI Releases
+      url: https://github.com/crewAIInc/crewAI/releases.atom
+
+  hackernews:
+    enabled: true
+    min_score: 80
+    keywords: [AI, agent, LLM, OpenAI, Anthropic, Claude, Copilot, Gemini, MCP]
+
+push:
+  feishu:
+    enabled: false
+    webhook: ""
+    secret: ""
+  wechat_work:
+    enabled: false
+    webhook: ""
+  dingtalk:
+    enabled: false
+    webhook: ""
+    secret: ""
+  email:
+    enabled: false
+    smtp_host: smtp.example.com
+    smtp_port: 465
+    use_ssl: true
+    username: you@example.com
+    password: ""
+    from_addr: you@example.com
+    to_addrs: [team@example.com]
+
+delivery:
+  max_items: 8
+  min_value_score: 6
+  recent_hours: 96
+  llm_max_candidates: 60
+  llm_batch_size: 20
+  dedup_store: ./data/pushed.json
+  digest_title: "AI / Agent 每日情报"
+  summary_style: "面向企业 AI 产品经理、研究员和管理层，突出今天新增变化、企业影响、可验证来源和建议动作。不要在正文显示评分。"
+
+dashboard:
+  output: ./data/dashboard-news.json
+  window_label: "最近 96 小时实时采集"
+  refresh_minutes: 60
+  next_run: "1 小时后"

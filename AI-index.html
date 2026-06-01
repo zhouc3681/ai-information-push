@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 情报雷达</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">智</div>
+          <div>
+            <h1>AI 情报雷达</h1>
+            <p>企业 AI 简报助手</p>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-view="brief" type="button">
+            <span class="icon" aria-hidden="true">▣</span>
+            <span>今日简报</span>
+          </button>
+          <button class="nav-item" data-view="trends" type="button">
+            <span class="icon" aria-hidden="true">↗</span>
+            <span>趋势与 PoC</span>
+          </button>
+          <button class="nav-item internal-only" data-view="skills" type="button">
+            <span class="icon" aria-hidden="true">◇</span>
+            <span>Skill 中心</span>
+          </button>
+          <button class="nav-item internal-only" data-view="workflow" type="button">
+            <span class="icon" aria-hidden="true">↓</span>
+            <span>Agent 工作流</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-panel">
+          <span class="panel-label">公司可见版</span>
+          <strong>只展示结论、来源和行动建议</strong>
+          <p>内部排序、筛选、Skill 调用链路默认隐藏，不进入对外推送页面。</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">实时采集 · 数据窗口由配置自动更新</p>
+            <h2 id="viewTitle">今日简报</h2>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" id="sourceButton" type="button">
+              <span aria-hidden="true">↧</span>
+              查看原文
+            </button>
+            <button class="ghost-button" id="emailBriefTopButton" type="button">
+              <span aria-hidden="true">@</span>
+              邮件接收
+            </button>
+            <button class="primary-button" id="copyBriefTopButton" type="button">
+              <span aria-hidden="true">⧉</span>
+              复制简报
+            </button>
+          </div>
+        </header>
+
+        <section class="view active" id="briefView" aria-labelledby="briefTitle">
+          <div class="metric-grid">
+            <article class="metric-tile">
+              <span>今日新增</span>
+              <strong id="todayNewMetric">0</strong>
+              <p>进入正文的近 72 小时新变化</p>
+            </article>
+            <article class="metric-tile">
+              <span>关联原文</span>
+              <strong id="sourceCountMetric">0</strong>
+              <p>官方发布、产品说明、论文与研究报告</p>
+            </article>
+            <article class="metric-tile">
+              <span>推送渠道</span>
+              <strong>3</strong>
+              <p>企业微信、飞书、邮件均可交付</p>
+            </article>
+            <article class="metric-tile">
+              <span>下次更新</span>
+              <strong>18:00</strong>
+              <p>自动补充下午新增信息</p>
+            </article>
+          </div>
+
+          <div class="brief-layout">
+            <section class="brief-preview">
+              <div class="section-heading compact">
+                <div>
+                  <span class="section-kicker">可直接推送</span>
+                  <h3 id="briefTitle">今日简报</h3>
+                </div>
+                <button class="primary-button" id="copyBriefButton" type="button">
+                  <span aria-hidden="true">⧉</span>
+                  复制简报
+                </button>
+              </div>
+              <div id="briefContent" class="brief-rich" aria-live="polite"></div>
+            </section>
+
+            <aside class="side-insight">
+              <h3>今天为什么该看</h3>
+              <ul>
+                <li>OpenAI 在 5 月 28 日更新了 Workspace Agents、企业应用模板和 Codex 管理能力。</li>
+                <li>ServiceNow 在 Knowledge 2026 后继续强化 AI Control Tower，把治理扩展到 Microsoft Agent 365 生态。</li>
+                <li>5 月中旬两篇研究开始量化“办公 Agent 是否可靠”和“企业 Copilot 到底怎么被用”。</li>
+                <li>今天的重点不是“又多了一个 Agent”，而是企业如何接收、治理、验证和分发这些 Agent 信息。</li>
+              </ul>
+              <div class="copy-status" id="copyStatus" role="status"></div>
+            </aside>
+          </div>
+
+          <section class="section-block" id="deliverySection">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">推送交付</span>
+                <h3>让公司同事直接收到简报</h3>
+              </div>
+              <p>这里模拟邮件、企业微信和飞书的交付方式；正式版由推送 Skill 调用 SMTP 或群机器人 Webhook。</p>
+            </div>
+            <div class="delivery-grid">
+              <section class="delivery-panel">
+                <h3>邮件接收</h3>
+                <p>收件人可以收到纯文字简报，也可以收到 Dashboard 页面链接。</p>
+                <div class="delivery-form">
+                  <label>
+                    <span>收件邮箱</span>
+                    <input id="emailInput" type="email" placeholder="name@company.com" />
+                  </label>
+                  <label>
+                    <span>接收内容</span>
+                    <select id="deliveryFormat">
+                      <option value="text">文字简报</option>
+                      <option value="dashboard">Dashboard 页面链接</option>
+                      <option value="both">文字简报 + Dashboard 链接</option>
+                    </select>
+                  </label>
+                  <button class="primary-button" id="emailButton" type="button">
+                    <span aria-hidden="true">@</span>
+                    生成邮件
+                  </button>
+                </div>
+                <pre class="email-preview" id="emailPreview"></pre>
+              </section>
+
+              <section class="delivery-panel">
+                <h3>企业微信 / 飞书卡片</h3>
+                <p>群机器人收到的是压缩版摘要，点击后可打开 Dashboard 查看来源。</p>
+                <div class="push-status-list" id="pushStatusList"></div>
+                <button class="ghost-button" id="copyPushCardButton" type="button">
+                  <span aria-hidden="true">⧉</span>
+                  复制推送卡片文案
+                </button>
+              </section>
+            </div>
+          </section>
+
+          <section class="section-block" id="sourceSection">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">关联原文</span>
+                <h3>来源链接</h3>
+              </div>
+              <p>每条简报都附带原文链接，便于公司团队进一步核验和调研。</p>
+            </div>
+            <div class="source-grid" id="sourceGrid"></div>
+          </section>
+        </section>
+
+        <section class="view" id="trendsView" aria-labelledby="trendsTitle">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">连续观察</span>
+              <h3 id="trendsTitle">趋势与 PoC</h3>
+            </div>
+            <p>面向公司读者，只展示可落地趋势和下一步验证建议。</p>
+          </div>
+
+          <div class="trend-layout">
+            <section class="trend-panel">
+              <h3>趋势观察</h3>
+              <div id="trendList" class="trend-list"></div>
+            </section>
+            <section class="poc-panel">
+              <h3>PoC 候选方向</h3>
+              <div id="pocList" class="poc-list"></div>
+            </section>
+          </div>
+
+          <section class="agent-section">
+            <div class="section-heading compact">
+              <div>
+                <span class="section-kicker">产品线索</span>
+                <h3>值得跟踪的 Agent 产品</h3>
+              </div>
+            </div>
+            <div class="agent-grid" id="agentGrid"></div>
+          </section>
+        </section>
+
+        <section class="view internal-only" id="skillsView" aria-labelledby="skillsTitle">
+          <div class="internal-banner">
+            <strong>内部视图</strong>
+            <span>此页面只用于团队运营和调试，不进入公司推送版。原型中通过 URL 参数隐藏，正式版应接入企业内网、角色权限或单独运营后台。</span>
+          </div>
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">技能注册中心</span>
+              <h3 id="skillsTitle">Skill 中心</h3>
+            </div>
+            <p>Skill 负责执行，排序负责先后，Agent 负责决策。</p>
+          </div>
+
+          <div class="skill-toolbar">
+            <label class="search-box">
+              <span aria-hidden="true">⌕</span>
+              <input id="skillSearchInput" type="search" placeholder="搜索 Skill、负责人或输入输出" />
+            </label>
+            <button class="ghost-button" id="resetSkillsButton" type="button">
+              <span aria-hidden="true">↺</span>
+              恢复预置
+            </button>
+          </div>
+
+          <div class="skill-table-wrap">
+            <table class="skill-table">
+              <thead>
+                <tr>
+                  <th>Skill 名称</th>
+                  <th>状态</th>
+                  <th>功能描述</th>
+                  <th>输入</th>
+                  <th>输出</th>
+                  <th>负责人</th>
+                  <th>调用次数</th>
+                </tr>
+              </thead>
+              <tbody id="skillTableBody"></tbody>
+            </table>
+          </div>
+
+          <section class="external-skill">
+            <div>
+              <span class="section-kicker">外部 Skill 接入区</span>
+              <h3>新增成员开发的 Skill</h3>
+              <p>提交后自动进入 Skill 中心，无需修改页面结构。</p>
+            </div>
+            <form id="skillForm" class="skill-form">
+              <label>
+                <span>Skill 名称</span>
+                <input name="name" required placeholder="例如：论文价值判断 Skill" />
+              </label>
+              <label>
+                <span>功能描述</span>
+                <input name="description" required placeholder="说明这个 Skill 负责什么" />
+              </label>
+              <label>
+                <span>输入</span>
+                <input name="input" required placeholder="例如：论文标题、摘要、代码链接" />
+              </label>
+              <label>
+                <span>输出</span>
+                <input name="output" required placeholder="例如：价值判断、应用场景、建议动作" />
+              </label>
+              <label>
+                <span>负责人</span>
+                <input name="owner" required placeholder="例如：研究组" />
+              </label>
+              <label>
+                <span>状态</span>
+                <select name="status">
+                  <option>运行中</option>
+                  <option>待配置</option>
+                  <option>异常</option>
+                  <option>停用</option>
+                </select>
+              </label>
+              <button class="primary-button" type="submit">
+                <span aria-hidden="true">＋</span>
+                接入 Skill
+              </button>
+            </form>
+          </section>
+        </section>
+
+        <section class="view internal-only" id="workflowView" aria-labelledby="workflowTitle">
+          <div class="internal-banner">
+            <strong>内部视图</strong>
+            <span>这里展示采集、筛选、排序和推送链路，适合运营团队排查质量，不应出现在客户可见简报中。</span>
+          </div>
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Agent 编排链路</span>
+              <h3 id="workflowTitle">Agent 工作流</h3>
+            </div>
+            <p>从资讯源到飞书 / 企业微信推送的完整链路。</p>
+          </div>
+
+          <div class="workflow" id="workflowList"></div>
+
+          <section class="principle-board">
+            <article>
+              <span>Skill</span>
+              <strong>负责执行</strong>
+              <p>每个 Skill 只处理一个明确任务，便于替换和扩展。</p>
+            </article>
+            <article>
+              <span>排序</span>
+              <strong>负责先后顺序</strong>
+              <p>后台综合判断用于决定谁进入简报正文和关联来源。</p>
+            </article>
+            <article>
+              <span>Agent</span>
+              <strong>负责决策</strong>
+              <p>综合去重、筛选、趋势和 PoC 建议，给出行动判断。</p>
+            </article>
+            <article>
+              <span>推送</span>
+              <strong>负责交付</strong>
+              <p>最终输出是团队能直接阅读和转发的中文简报。</p>
+            </article>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./data/dashboard-news.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
