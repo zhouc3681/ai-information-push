@@ -39,6 +39,19 @@ powershell -ExecutionPolicy Bypass -File .\run-real-news-push.ps1
 
 它不会发送企业微信、飞书或邮件。这样 Dashboard 始终展示最近窗口内的最新资讯。
 
+## 链接展示规则
+
+所有推送渠道都会显式展示完整 URL，不再只使用“点击查看”这类富文本链接。
+
+推送正文会包含：
+
+```text
+原文链接：https://...
+官网链接：https://...
+```
+
+这样复制到微信、Word、Notion 或归档日报后，链接仍然可见。
+
 实时窗口在 `ai_news_config.yaml` 中配置：
 
 ```yaml

@@ -434,19 +434,47 @@ function getSortedBriefItems() {
   return [...briefItems].sort((a, b) => b.importanceScore - a.importanceScore);
 }
 
-function getSourceLinks(ids) {
+function getSourceDetails(ids) {
   return ids
     .map((id) => sourceMap.get(id))
     .filter(Boolean)
-    .map((source) => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.org}：${source.product}</a>`)
-    .join("、");
+    .map((source) => {
+      const originalUrl = source.originalUrl || source.url || "";
+      const officialUrl = source.officialUrl || source.homepageUrl || originalUrl;
+      return { ...source, originalUrl, officialUrl };
+    });
+}
+
+function renderPlainUrl(label, value) {
+  return `<div class="plain-url-row"><span>${label}</span><code>${value || "未提供"}</code></div>`;
+}
+
+function getSourceLinks(ids) {
+  return getSourceDetails(ids)
+    .map(
+      (source) => `
+        <div class="permanent-link-block">
+          <div><strong>${source.org}：${source.product}</strong></div>
+          ${renderPlainUrl("原文链接", source.originalUrl)}
+          ${renderPlainUrl("官网链接", source.officialUrl)}
+          ${source.originalUrl ? `<a href="${source.originalUrl}" target="_blank" rel="noopener noreferrer">打开原文</a>` : ""}
+        </div>
+      `
+    )
+    .join("");
 }
 
 function getSourceText(ids) {
-  return ids
-    .map((id) => sourceMap.get(id))
-    .filter(Boolean)
-    .map((source) => `${source.org} - ${source.product}（${source.date}）：${source.url}`)
+  return getSourceDetails(ids)
+    .map((source) =>
+      [
+        `来源：${source.org}`,
+        `项目/产品：${source.product}`,
+        `日期：${source.date}`,
+        `原文链接：${source.originalUrl || "未提供"}`,
+        `官网链接：${source.officialUrl || "未提供"}`
+      ].join("\n")
+    )
     .join("\n");
 }
 
@@ -466,9 +494,16 @@ function renderBrief() {
           <article class="brief-card">
             <div class="brief-card-index">${index + 1}</div>
             <h3>${item.title}</h3>
-            <p>${item.summary}</p>
+            <div class="brief-point first-point">
+              <span>项目名称</span>
+              <p>${item.projectName || item.title}</p>
+            </div>
             <div class="brief-point">
-              <span>为什么今天要看</span>
+              <span>一句话介绍</span>
+              <p>${item.summary}</p>
+            </div>
+            <div class="brief-point">
+              <span>推荐理由</span>
               <p>${item.whyNow}</p>
             </div>
             <div class="brief-point">
@@ -476,7 +511,7 @@ function renderBrief() {
               <p>${item.action}</p>
             </div>
             <div class="brief-links">
-              <span>关联原文</span>
+              <span>永久可复制链接</span>
               <div>${getSourceLinks(item.sourceIds)}</div>
             </div>
           </article>
@@ -499,9 +534,28 @@ function renderSources() {
             <span>${source.date}</span>
           </div>
           <h4>${source.title}</h4>
-          <p>${source.summary}</p>
+          <div class="source-field">
+            <span>项目名称</span>
+            <p>${source.product || source.title}</p>
+          </div>
+          <div class="source-field">
+            <span>一句话介绍</span>
+            <p>${source.summary || "暂无摘要，请打开原文查看。"}</p>
+          </div>
+          <div class="source-field">
+            <span>来源</span>
+            <p>${source.org}</p>
+          </div>
+          <div class="source-field">
+            <span>推荐理由</span>
+            <p>${source.reason || "该资讯进入本次实时采集窗口，并与企业 AI / Agent 方向相关。"}</p>
+          </div>
           <div class="source-product">${source.org} · ${source.product}</div>
-          <a class="source-link" href="${source.url}" target="_blank" rel="noopener noreferrer">打开原文</a>
+          <div class="source-url-list">
+            ${renderPlainUrl("原文链接", source.originalUrl || source.url)}
+            ${renderPlainUrl("官网链接", source.officialUrl || source.url)}
+          </div>
+          ${source.url ? `<a class="source-link" href="${source.url}" target="_blank" rel="noopener noreferrer">打开原文</a>` : ""}
         </article>
       `
     )
@@ -633,11 +687,11 @@ function buildBriefText(includeDashboard = false) {
   ];
 
   getSortedBriefItems().forEach((item, index) => {
-    lines.push(`${index + 1}. ${item.title}`);
-    lines.push(`摘要：${item.summary}`);
-    lines.push(`为什么今天要看：${item.whyNow}`);
+    lines.push(`${index + 1}. ${item.projectName || item.title}`);
+    lines.push(`一句话介绍：${item.summary}`);
+    lines.push(`推荐理由：${item.whyNow}`);
     lines.push(`建议动作：${item.action}`);
-    lines.push("关联原文：");
+    lines.push("永久可复制链接：");
     lines.push(getSourceText(item.sourceIds));
     lines.push("");
   });
@@ -657,11 +711,15 @@ function buildBriefText(includeDashboard = false) {
 
 function buildPushCardText() {
   const first = getSortedBriefItems()[0];
+  const sourceText = getSourceText(first.sourceIds);
   return [
     "【今日AI简报】",
     `生成时间：${dailyMeta.generatedAt}｜数据窗口：${dailyMeta.windowLabel}`,
-    `今日主线：${first.title}`,
+    `项目名称：${first.projectName || first.title}`,
+    `一句话介绍：${first.summary}`,
     `建议动作：${first.action}`,
+    "永久可复制链接：",
+    sourceText,
     `查看 Dashboard：${dailyMeta.dashboardUrl}`
   ].join("\n");
 }

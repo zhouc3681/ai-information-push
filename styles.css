@@ -508,6 +508,51 @@ button {
   padding-top: 10px;
 }
 
+.first-point {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.permanent-link-block {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #e1d7c7;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.plain-url-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  color: #4b473f;
+  line-height: 1.5;
+}
+
+.plain-url-row span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.plain-url-row code {
+  padding: 2px 0;
+  color: #1f5f8f;
+  background: transparent;
+  font-family:
+    "Microsoft YaHei",
+    "PingFang SC",
+    Consolas,
+    monospace;
+  font-size: 13px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .source-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -545,6 +590,18 @@ button {
   line-height: 1.65;
 }
 
+.source-field {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.source-field span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .source-product {
   margin-top: auto;
   padding-top: 12px;
@@ -552,6 +609,14 @@ button {
   font-size: 13px;
   font-weight: 800;
   line-height: 1.45;
+}
+
+.source-url-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
 
 .source-link {
@@ -1184,63 +1249,4 @@ button {
     min-height: 480px;
     font-size: 14px;
   }
-}
-
-/* —— 推荐情报源卡片补充样式 —— */
-.source-card .source-tag {
-  align-self: flex-start;
-  padding: 3px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.03);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.source-card h4 {
-  margin: 12px 0 8px;
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-.source-card .source-meta {
-  margin-top: auto;
-  padding-top: 10px;
-  color: var(--muted);
-  font-size: 13px;
-  font-style: italic;
-}
-
-.source-card a {
-  margin-top: auto;
-  padding-top: 12px;
-  color: var(--accent-strong);
-  font-weight: 700;
-  text-decoration: none;
-  word-break: break-all;
-}
-
-.source-card a:hover {
-  text-decoration: underline;
-}
-
-.source-followup {
-  margin-top: 18px;
-  padding: 16px 18px;
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.015);
-  line-height: 1.65;
-}
-
-.source-followup strong {
-  display: block;
-  margin-bottom: 6px;
-}
-
-.source-followup ul {
-  margin: 0;
-  padding-left: 20px;
 }
