@@ -1,0 +1,18 @@
+.venv/
+.pip-cache/
+__pycache__/
+*.pyc
+
+# 本地私有配置：可放真实 webhook、SMTP 密码、API Key
+ai_news_config.local.yaml
+
+# 自动生成数据与去重存档
+data/
+pushed.json
+
+# 临时下载目录
+ai-agent-news-push-src-*/
+*.zip
+
+# 日志
+*.log
